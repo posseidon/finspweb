@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Finspweb</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><%= link_to "Home", root_path %></li>
+          <% if user_signed_in? %>
+          <li>
+            <%= link_to versions_path do %>
+              <i class="icon-th-list"></i> List versions
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_version_path do %>
+              <i class="icon-share"></i> Add Version
+            <% end %>
+          </li>
+          <% end %>
+          <li>
+            <%= link_to home_help_path do %>
+              <i class="icon-question-sign"></i> Help
+            <% end %>
+          </li>
+          <!-- LOGIN and USER MANAGEMENT LINKS -->
+          <li>
+            <% if user_signed_in? %>
+              <%= link_to destroy_user_session_path, :method => :delete do %>
+                <i class="icon-off"></i> Logout
+              <% end %>
+            <% else %>
+              <%= link_to new_user_session_path do %>
+                <i class="icon-user"></i> Login
+              <% end %>
+            <% end %>
+          </li>
+          <!-- END LOGIN-->
+        </ul>
+        <h3 class="muted">INSPIRE Loader</h3>
+      </div>
+
+      <hr>
+      <!-- CONTENT -->
+      <%= yield %>
+      <!-- END CONTENT -->
+      <hr>
+
+      <div id="footer">
+        <div class="container">
+          <!--
+            <p class="muted credit">
+              2011, Földmérési és Távérzékelési Intézet
+              <br>
+              1149 Budapest, Bosnyák tér 5., Postafiók: 1592 Budapest, Pf. 585.
+              <br>
+              Tel: 06-1-222-5101, Fax: 06-1-222-5112<br>
+            </p>
+          -->
+        </div>
+      </div>
+    </div> <!-- /container -->
+</body>
+</html>

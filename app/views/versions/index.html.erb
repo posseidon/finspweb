@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <!-- Section: Active Versions List -->
+  <div class="row-fluid" id="active_versions_list">
+    <h2 class="info">Active Versions</h2>
+    <% if @versions.empty? %>
+      <blockquote>No active Version</blockquote>
+    <% else %>
+      <%= render 'version', :locals => {:versions => @versions} %>
+    <% end %>
+  </div>
+  <hr>
+  <!-- Section: Search -->
+  <div class="row-fluid">
+    <div class="control-group info">
+        <%= form_tag search_versions_path, :method => 'get', :remote => true do %>
+        <div class="input-prepend">
+            <%= text_field_tag :search, params[:search], :class => "input-xxlarge" %>
+            <%= button_tag(type: "submit", class: "btn btn-info") do %>
+                <i class="icon-search"></i>
+                Search
+            <% end %>
+        </div>
+        <% end %>
+     </div>
+     <div id="search_result"></div>
+  </div>
+  <!-- END Section Search -->
+</div>

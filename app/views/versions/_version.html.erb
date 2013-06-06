@@ -1,0 +1,37 @@
+<% if versions.empty? %>
+  <div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Error!</strong> Versions not found.
+  </div>
+<% else %>
+  <% versions.each do |version| %>
+    <h4 class="well">
+      <%= version.name %>
+      <span class="info pull-right">
+        Active: <%= display_status(version.active) %>
+        Archived: <%= display_status(version.archived) %>
+        <%= link_to 'View', version_path(:id => version.id), :class => "btn btn-primary btn-mini" %>
+      </span>
+    </h4>
+    <table class="table-striped table-condensed table-hover">
+      <tr>
+        <td>
+          <p>Created at: <span class="label label-important"><%= version.created_at %></span></p>
+        </td>
+        <td>
+          <p >Updated at: <span class="label label-important"><%= version.updated_at %></span></p>
+        </td>
+        <td>
+          <p>Number of Shapefiles: <span class="label label-inverse"><%= version.shapefiles.count %></span></p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <blockquote>
+            <small><%= version.description %></small>
+          </blockquote>
+        </td>
+      </tr>
+    </table>
+  <% end %>
+<% end %>

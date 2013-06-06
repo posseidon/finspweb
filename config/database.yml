@@ -1,0 +1,29 @@
+development:
+  adapter:  postgis
+  encoding: unicode
+  host:     localhost
+  port:     5432
+  database: finspweb_dev
+  username: postgres
+  password: password
+  pool: 5
+
+test:
+  adapter:  postgis
+  encoding: unicode
+  host:     localhost
+  port:     5432
+  database: finspweb_dev
+  username: postgres
+  password: password
+  pool: 5
+
+production:
+  adapter: postgis
+  encoding: unicode
+  host:     localhost
+  port:     5432
+  database: finspweb_dev
+  username: postgres
+  password: password
+  pool: 5

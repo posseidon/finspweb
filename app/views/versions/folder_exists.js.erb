@@ -1,0 +1,7 @@
+<% if @exists %>
+  $("#checkResultDiv").attr("class", "alert");
+  $("#deactivateErrors").html(" Given Folder Exists<br/>");
+<% else %>
+  $("#checkResultDiv").attr("class", "alert");
+  $("#deactivateErrors").html(" Given folder does not exists");
+<% end %>

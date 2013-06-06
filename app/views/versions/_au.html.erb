@@ -1,0 +1,177 @@
+<% if admin_unit.shapefile_file_name %>
+  <div class="row-fluid">
+      <h4 class="text-info">
+        <a id="auIdentifier" rel="popover" data-original-title="Help"><%= admin_unit.identifier %></a>
+        <span class="text-success pull-right">&nbsp;<%= number_to_human_size(admin_unit.shapefile_file_size) %></span>
+        <a id="auInfo" class="text-warning pull-right" rel="popover" data-original-title=""> [<%= admin_unit.shapefile_file_name %>] - </a>
+      </h4>
+  </div>
+  <!-- Action steps -->
+  <div id="adminUnitsSteps" class="row-fluid psteps_strict" title="<%= admin_unit.condition %>">
+      <div class="span3">
+        <div class="step-title"><span class="step-order">1.</span> <span class="step-name">Unzip Content</span></div>
+        <div class="step-title"><span class="step-order">2.</span> <span class="step-name">Process</span></div>
+        <div class="step-title"><span class="step-order">3.</span> <span class="step-name">Archive</span></div>
+        <div class="step-title"><span class="step-order">4.</span> <span class="step-name">Information</span></div>
+      </div>
+      <div class="span9 well clearfix">
+          <div class="step-content">
+            <blockquote>
+              <p class="text-info">File Name: <%= admin_unit.shapefile_file_name %></p>
+              <p class="text-error">File Size: <%= number_to_human_size(admin_unit.shapefile_file_size) %></p>
+              <p class="text-warning">Condition: <%= admin_unit.condition %></p>
+              <%= link_to("Extract", extract_version_path(:id => admin_unit.id), :class => "btn btn-info action", :remote => true) %>
+            </blockquote>
+          </div>
+          <div class="step-content">
+            <input id="auSchema" value="<%= schema('AU') %>" class="hide"/>
+            <input id="auShapeSchema" value="<%= admin_unit.note %>" class="hide">
+            <div class="span4">
+              <table id="auSchemaTable" class="table table-striped table-condensed table-bordered">
+                <thead>
+                  <tr><th>Column</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <button id="clearSelectionBtn" class="btn btn-inverse">Clear Mappings</button>
+            </div>
+            <div class="span5">
+              <table id="auTable" class="table table-striped table-condensed table-bordered">
+                <thead>
+                  <tr><th>Attribute</th><th>Mapped</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <%= form_tag transform_version_path, {:id => 'au_transform_data_form', :remote => true} do %>
+                <%= hidden_field_tag :map_list, "" %>
+                <%= hidden_field_tag :shapeid, admin_unit.id %>
+                <%= hidden_field_tag :type, "au" %>
+                <%= submit_tag 'Transform Data', :class => 'btn btn-primary action' %>
+              <% end %>
+            </div>
+          </div>
+          <div class="step-content">
+            <!-- Information DIV -->
+            <div id="checkResultDiv" class="hidden">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong><span id="deactivateErrors"></span></strong>
+            </div>
+            <!-- /END Information DIV -->
+
+            <!-- Deactivation FORM -->
+            <%= form_tag(deactivate_version_path, :remote => true, :method => :put, "onsubmit" => "return $(this).validate()") do %>
+              <div class="input-prepend input-append">
+                <span class="add-on">Archive Location</span>
+                <%= text_field_tag 'location', nil, {:class => "input-xlarge aulocation"} %>
+                <%= hidden_field_tag 'schema', 'au' %>
+                <%= hidden_field_tag 'shapeid', admin_unit.id %>
+                <%= link_to("Check", folder_exists_version_path(:location => ""), :id => "checkFolderLink",:class => "btn btn-info", :remote => true) %>
+              </div>
+              <div class="input-append">
+                <label class="checkbox">
+                  <%= check_box_tag 'compress', true, false %>
+                  Compress data
+                </label>
+                <label class="checkbox">
+                  <%= check_box_tag 'default_path', true, false, :class => 'au_default_path' %>
+                  Default Folder
+                </label>
+                <%= submit_tag "Deactivate", :id => "deactivateVersionBtn" ,:class => "btn btn-info" %>
+              </div>
+
+            <% end %>
+            <!-- /END Deactivation FORM -->
+          </div>
+          <div class="step-content">
+            <table class="table table-condensed table-striped">
+              <tr>
+                <td>Features</td>
+                <td><%= admin_unit.features %></td>
+              </tr>
+              <tr>
+                <td>Archive</td>
+                <td><%= link_to 'Download', download_archive_version_path(:path => admin_unit.archive_path) %></td>
+              </tr>
+              <tr>
+                <td>User</td>
+                <td><%= admin_unit.version.user.email %></td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="clear:both;"></div>
+      </div>
+  </div>
+  <script type="text/javascript">
+    $(function(){
+      var helper = $("#auIdentifier").data("popover");
+      helper.options.placement = "left";
+      helper.options.html = true;
+      helper.options.content = $('#au_sample_mapper').html();
+
+      loadInfo($("#auShapeSchema").val(), "auInfo");
+
+      modelSchema($("#auSchema").val(), "auTable");
+      shapeSchema($("#auShapeSchema").val(), "auSchemaTable");
+      $("#auSchemaTable tbody tr .draggable").draggable({
+        helper: "clone",
+        containment: "#adminUnitsSteps",
+        cursor: "crosshair"
+      });
+
+      $("#auTable tbody .droppable.mapped").droppable({
+        drop: function(event, ui){
+          var mappedValue = $(this).html();
+          if(mappedValue != ''){
+            $(this).text(mappedValue + "," + ui.draggable.text());
+          }else{
+            $(this).text(ui.draggable.text());
+          }
+        }
+      });
+
+      $("#au_transform_data_form").submit(function(){
+        $("#au_transform_data_form #map_list").val(schemaTableJSON("auTable"));
+      });
+
+      $("#clearSelectionBtn").click(function(){
+        clearSchemaTable("auTable");
+      });
+
+      $(".au_default_path").change(function(){
+        if( this.checked ){
+          $(".aulocation").attr("disabled", "disabled");
+        }else{
+          $(".aulocation").removeAttr("disabled");
+        }
+      });
+    });
+  </script>
+
+<!-- End Action steps -->
+<% else %>
+  <div class="row-fluid">
+    <h4 class="text-info">Administrative Units</h4>
+  </div>
+  <div class="hero-unit">
+    <h1 class="text-center text-warning">Administrative Units <span class="text-info">Missing</span></h1>
+  </div>
+<% end %>
+
+<div id="au_sample_mapper" style="display: none">
+    <table id="sampleMappingAu" class="table table-striped table-condensed table-bordered">
+      <thead>
+        <tr><th>Attribute</th><th>Mapped</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="key">identifier</td><td>shn</td></tr>
+        <tr><td class="key">name</td><td>namn</td></tr>
+        <tr><td class="key">code</td><td>icc</td></tr>
+        <tr><td class="key">natcode</td><td>shn</td></tr>
+        <tr><td class="key">levelname</td><td>desn</td></tr>
+        <tr><td class="key">level</td><td>natlevel</td></tr>
+    </table>
+</div>
+

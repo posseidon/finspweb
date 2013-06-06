@@ -1,0 +1,233 @@
+/*
+Pines Sub-Project Page Styling
+Copyright (C) 2012 SciActive.com. All Rights Reserved.
+*/
+.page-banner {
+	padding: 200px 0 170px;
+	text-align: center;
+	overflow: hidden;
+}
+.page-banner h1 {
+	font-size: 70px;
+	line-height: 65px;
+}
+.page-banner p {
+	font-size: 30px;
+	line-height: 48px;
+}
+.page-banner .btn-large {
+	margin-top: 30px;
+	font-size: 26px;
+}
+.page-banner .right-button {
+	margin-left: 20px;
+}
+.page-points .row-fluid {
+	margin-bottom: 30px;
+}
+body .pf-form .pf-heading * {
+	margin-top: .1em !important;
+	margin-bottom: .1em !important;
+}
+#copyright {
+	text-align: center;
+	margin-top: 40px;
+}
+/* Mobile */
+@media (max-width: 768px) {
+	.page-banner {
+		padding: 30px 0 20px;
+	}
+	.page-banner h1 {
+		font-size: 35px;
+		line-height: 35px;
+	}
+	.page-banner p {
+		font-size: 16px;
+		line-height: 30px;
+	}
+	.page-banner .btn-large {
+		font-size: 16px;
+	}
+	.page-banner .right-button {
+		margin-left: 0;
+	}
+	.page-points .row-fluid {
+		margin-bottom: 0;
+	}
+	#sections {
+		padding: 0 .4em;
+	}
+	#sections .container-fluid {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	#fb-root {
+		display: none; /* Facebook's code makes a horizontal scrollbar. Grr. */
+	}
+}
+/* Tablet */
+@media (min-width: 768px) and (max-width: 980px) {
+	.page-banner {
+		float: left;
+		width: 20%;
+		padding: 5px 0;
+	}
+	.page-banner h1 {
+		font-size: 25px;
+		line-height: 25px;
+	}
+	.page-banner p {
+		font-size: 14px;
+		line-height: 16px;
+		margin-top: 10px;
+	}
+	.page-banner .btn-large {
+		margin-top: 30px;
+		font-size: 14px;
+	}
+	.page-banner .right-button {
+		margin-left: 0;
+	}
+	.page-points {
+		float: right;
+		width: 80%;
+	}
+	.page-points .row-fluid {
+		margin-bottom: 10px;
+	}
+	#sections {
+		clear: both;
+	}
+}
+
+/* Source View */
+.ui-dialog.sourcecode {
+	-webkit-box-shadow: 0px 6px 30px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow: 0px 6px 30px rgba(50, 50, 50, 0.75);
+	-o-box-shadow: 0px 6px 30px rgba(50, 50, 50, 0.75);
+	box-shadow: 0px 6px 30px rgba(50, 50, 50, 0.75);
+}
+pre.prettyprint {
+	display: table;
+	min-width: 100%;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	-o-border-radius: 0;
+	border-radius: 0;
+	padding: .4em;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Lucida Grande", Lucida, sans-serif;
+    color: #444;
+}
+
+
+div.section, code, h2 {
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    background: #FFF;
+    padding: 15px 10px 10px;
+    max-width: 600px;
+    margin-bottom: 20px;
+    -moz-border-radius-topleft: 0;
+    -moz-border-radius-topright: 0;
+    -webkit-border-top-left-radius: 0;
+    -webkit-border-top-right-radius: 0;
+}
+
+code {
+    display: block;
+    font-family: "Courier New", Courier, serif;
+    background: #E2E2E2;
+    color: black;
+}
+
+h2 {
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius-topleft: 12px;
+    -moz-border-radius-topright: 12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    margin-bottom: 0px;
+    background: #CCC;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+textarea {
+    width: 90%;
+}
+
+input, textarea {
+    font-size: 14px;
+    border: #CCC solid 1px;
+    border-color:#CCC; /* important for validator to find default color */
+    padding: 5px;
+    background: white;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-box-shadow: inset 0 0 5px #EEE;
+    -webkit-box-shadow: inset 0 0 5px #EEE;
+    box-shadow: inset 0 0 5px #EEE;
+    color: #666;
+    width: 70%;
+}
+
+input[type=checkbox], input[type=radio] {
+    width:auto;
+}
+
+input[type=submit] {
+    background: #f0f8ff;
+    font-weight: bold;
+    color: #3e8888;
+    width: 130px;
+    cursor: pointer;
+}
+
+.jquery_form_error_message {
+    margin: 5px 0 20px;
+    padding: 10px;
+    background: pink;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+}
+
+.error {
+    background: pink;
+}
+
+span.chars_left,
+span.jquery_form_error_message {
+    background: #f2f2f2;
+    padding: 0 2px;
+    font-weight: normal;
+    font-size: 90%;
+    color: #666;
+}
+
+span.jquery_form_error_message {
+    color: red;
+    display: block;
+    background: none;
+    margin: 0;
+    padding: 0;
+}
+
+em {
+    background: lightyellow;
+    font-size: 90%;
+    color: #81815c;
+    padding: 0 1px;
+}
+
+.jquery_form_help {
+    color:#999;
+    font-family: Georgia, "Times New Roman", serif;
+    margin-left: 4px;
+}

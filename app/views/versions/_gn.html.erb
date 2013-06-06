@@ -1,0 +1,52 @@
+      <% if geo_name.shapefile_file_name %>
+      <div class="row-fluid">
+        <h4 class="text-info">
+          <%= geo_name.identifier %>
+          <span class="text-success pull-right">&nbsp;<%= number_to_human_size(geo_name.shapefile_file_size) %></span>
+          <span class="text-warning pull-right">[<%= geo_name.shapefile_file_name %>] - </span>
+        </h4>
+      </div>
+      <!-- Action steps -->
+      <div class="row-fluid marketing">
+        <div id="geographicalNamesSteps" class="row-fluid psteps_strict" title="<%= geo_name.condition %>">
+            <div class="span3">
+              <div class="step-title"><span class="step-order">i.</span> <span class="step-name">Unzip Content</span></div>
+              <div class="step-title"><span class="step-order">iii.</span> <span class="step-name">Transform</span></div>
+              <div class="step-title"><span class="step-order">iv.</span> <span class="step-name">Archive</span></div>
+            </div>
+            <div class="span9 well clearfix">
+                <div class="step-content">
+                  <blockquote>
+                    <p class="text-info">File Name: <%= geo_name.shapefile_file_name %></p>
+                    <p class="text-error">File Size: <%= number_to_human_size(geo_name.shapefile_file_size) %></p>
+                    <p class="text-warning">Condition: <%= geo_name.condition %></p>
+                    <%= link_to("Extract", extract_version_path(:id => geo_name.id), :class => "btn btn-info action", :remote => true) %>
+                  </blockquote>
+                </div>
+                <div class="step-content">
+                  <blockquote>
+                    LOREM IPSUM
+                  </blockquote>
+                </div>
+                <div class="step-content">
+                  <blockquote>
+                    LOREM IPSUM
+                  </blockquote>
+                </div>
+
+                <div style="clear:both;"></div>
+                <button class="next-button btn hide">Next</button>
+                <button class="submit-button btn">Done</button>
+                <button class="back-button btn">Back</button>
+            </div>
+        </div>
+      </div>
+      <!-- End Action steps -->
+      <% else %>
+        <div class="row-fluid">
+          <h4 class="text-info">Geographical Names</h4>
+        </div>
+        <div class="hero-unit">
+          <h1 class="text-center text-warning">Gegoraphical Names <span class="text-info">Missing</span></h1>
+        </div>
+      <% end %>
