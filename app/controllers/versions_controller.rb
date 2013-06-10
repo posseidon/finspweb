@@ -22,7 +22,11 @@ class VersionsController < ApplicationController
   end
 
   def search
-    @versions = Version.includes(:shapefiles).search_by_description(params[:search])
+    if params[:search] == "all"
+      @versions = Version.includes(:shapefiles).all
+    else
+      @versions = Version.includes(:shapefiles).search_by_description(params[:search])
+    end
   end
 
   # GET /versions/new
@@ -46,7 +50,6 @@ class VersionsController < ApplicationController
   # GET /versions/1
   def show
     id = params[:id]
-    raise ActiveRecord::RecordNotFound, "Page not found." if @version.exists?(id)
     @version = Version.includes(:shapefiles).find(id)
     @admin_unit = @version.shapefiles.find_by_identifier(ADMIN_UNITS_ID)
     @cad_parcel = @version.shapefiles.find_by_identifier(CADASTRAL_PARCELS_ID)
@@ -58,12 +61,16 @@ class VersionsController < ApplicationController
   end
 
   def transform
-    shapeid = params[:shapeid]
-    maplist = params[:map_list]
-    object_type = params[:type]
-    unless Shapefile.valid_for_processing(parameters[:type])
-      SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
-    else
+    begin
+      shapeid = params[:shapeid]
+      maplist = params[:map_list]
+      object_type = params[:type]
+      unless Shapefile.valid_for_processing(params[:type])
+        SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
+      else
+        @error = true
+      end
+    rescue => exception
       @error = true
     end
   end
@@ -75,8 +82,8 @@ class VersionsController < ApplicationController
       schema = params[:schema]
 
       default_path = "#{ConfigHandler.app_config('archive_folder')}"
-      archive_path = parameters['default_path'].nil? ? default_path : location
-      compress = parameters['compress'] == nil ? false : true
+      archive_path = params['default_path'].nil? ? location : default_path
+      compress = params['compress'] == nil ? false : true
 
       SuckerPunch::Queue[:deactivate_queue].async.perform(archive_path, compress, schema, shapeid)
     rescue => exception

@@ -5,13 +5,15 @@
     <% if @versions.empty? %>
       <blockquote>No active Version</blockquote>
     <% else %>
-      <%= render 'version', :locals => {:versions => @versions} %>
+      <%= render 'version', :versions => @versions %>
     <% end %>
   </div>
   <hr>
   <!-- Section: Search -->
   <div class="row-fluid">
     <div class="control-group info">
+
+        <!-- Version Search Form -->
         <%= form_tag search_versions_path, :method => 'get', :remote => true do %>
         <div class="input-prepend">
             <%= text_field_tag :search, params[:search], :class => "input-xxlarge" %>
@@ -21,6 +23,8 @@
             <% end %>
         </div>
         <% end %>
+
+
      </div>
      <div id="search_result"></div>
   </div>

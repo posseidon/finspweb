@@ -29,7 +29,7 @@ class ConfigHandler
   def self.transform_geometry(source_srid, source_geometry, destination_srid)
     unless source_srid == destination_srid
       src_proj  = RGeo::Geographic.spherical_factory(:srid => source_srid)
-      dest_proj = RGeo::Geos.factory(:proj4 => self.EPSG_4258, :srid => destination_srid)
+      dest_proj = RGeo::Geos.factory(:proj4 => ConfigHandler::EPSG_4258, :srid => destination_srid)
       return RGeo::CoordSys::Proj4.transform(src_proj.proj4, source_geometry, dest_proj.proj4, dest_proj)
     else
       return source_geometry
