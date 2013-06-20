@@ -4,6 +4,9 @@ gem 'rails', '3.2.12'
 
 gem 'pg'
 gem 'pg_search'
+
+# RGeo dependencies
+gem 'ffi-geos'
 gem 'rgeo'
 gem 'rgeo-shapefile'
 gem 'activerecord-postgis-adapter'
@@ -36,18 +39,3 @@ group :development do
   gem 'better_errors'
   gem 'faker'
 end
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'debugger'

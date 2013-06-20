@@ -6,7 +6,7 @@ development:
   database: finspweb_dev
   username: postgres
   password: password
-  pool: 5
+  pool: 20
 
 test:
   adapter:  postgis
@@ -16,7 +16,7 @@ test:
   database: finspweb_dev
   username: postgres
   password: password
-  pool: 5
+  pool: 20
 
 production:
   adapter: postgis
@@ -26,4 +26,4 @@ production:
   database: finspweb_dev
   username: postgres
   password: password
-  pool: 5
+  pool: 20

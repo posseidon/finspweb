@@ -4,19 +4,24 @@
 class InspireFactory
   OBJECTS = {
         'au' => {
-          'creation'   => Administrativeunit.new,
           'table_name' => Administrativeunit.table_name,
           'identifier' => 'Administrative Units'
         },
         'cp' => {
-          'creation'   => Cadastralparcel.new,
           'table_name' => Cadastralparcel.table_name,
           'identifier' => 'Cadastral Parcels'
         }
       }
 
   def self.create(type)
-    return OBJECTS[type]['creation']
+    case type
+    when 'au'
+      return Administrativeunit.new
+    when 'cp'
+      return Cadastralparcel.new
+    else
+      return nil
+    end
   end
 
   def self.table_name(type)

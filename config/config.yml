@@ -1,6 +1,7 @@
 defaults: &defaults
   dump_command:    pg_dump -U {{user}} -w {{compress}} -b -a -h {{hostname}} -t {{tablename}} {{databasename}} -f {{output_directory}}/{{filename}}
   archive_folder:  /home/ntb/Public/rails_archive/public/system/shapefiles
+  ogr2ogr_cmd:     ogr2ogr -f "ESRI Shapefile" -s_srs {{src_proj}} -t_srs {{dest_proj}} {{dest_file}} {{src_file}}
 
 development:
   <<: *defaults

@@ -110,6 +110,13 @@
           <div style="clear:both;"></div>
       </div>
   </div>
+  <% unless cad_parcel.faults.nil? %>
+    <div class="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error: </strong> <%= cad_parcel.faults %>
+      <%= link_to 'Delete Version', @version, :confirm => "Delete #{@version.name}?", :method => :delete %>
+    </div>
+  <% end %>
   <script type="text/javascript">
     $(function(){
       var helper = $("#cpIdentifier").data("popover");

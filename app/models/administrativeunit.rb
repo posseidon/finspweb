@@ -1,13 +1,24 @@
 class Administrativeunit < ActiveRecord::Base
   attr_accessible :identifier, :name, :code, :natcode, :levelname, :level, :geom
 
-  def set_attributes(record, mappings, projection)
-    self.identifier = record.attributes[mappings['identifier']]
-    self.name = record.attributes[mappings['name']]
-    self.code = record.attributes[mappings['code']]
-    self.natcode = record.attributes[mappings['natcode']]
-    self.levelname = record.attributes[mappings['levelname']]
+  def set_attributes(record, mappings)
+    self.identifier = attributes_of(record, mappings['identifier'])
+    self.name       = attributes_of(record, mappings['name'])
+    self.code       = attributes_of(record, mappings['code'])
+    self.natcode    = attributes_of(record, mappings['natcode'])
+    self.levelname  = attributes_of(record, mappings['levelname'])
 
-    self.geom = ConfigHandler.transform_geometry(projection, record.geometry, 4258)
+    parser = RGeo::WKRep::WKTParser.new(nil, :default_srid => 4258)
+    self.geom       = parser.parse(record.geometry.as_text)
   end
+
+  private
+  def attributes_of(record, by_mapping)
+    values = []
+    by_mapping.split(",").each do |value|
+      values.push(record.attributes[value])
+    end
+    return values.join("-")
+  end
+
 end

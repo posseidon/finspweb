@@ -3,7 +3,7 @@ Finspweb::Application.routes.draw do
 
   devise_for :users
 
-  resources :versions, :except => [:destroy, :edit, :update] do
+  resources :versions, :except => [:edit, :update] do
     member do
       get  'extract'
       post 'transform'

@@ -38,7 +38,7 @@ class VersionsController < ApplicationController
   # POST /versions
   def create
     @version = Version.new(params[:version])
-    if @version.save!
+    if @version.save
       flash[:notice] = 'Version was successfully created.'
       redirect_to(@version)
     else
@@ -54,6 +54,15 @@ class VersionsController < ApplicationController
     @admin_unit = @version.shapefiles.find_by_identifier(ADMIN_UNITS_ID)
     @cad_parcel = @version.shapefiles.find_by_identifier(CADASTRAL_PARCELS_ID)
     @geo_name = @version.shapefiles.find_by_identifier(GEOGRAPHICAL_NAMES_ID)
+  end
+
+  def destroy
+    begin
+      Version.destroy(params[:id])
+      redirect_to :action => 'index'
+    rescue => exception
+      Rails.logger.info("#{exception}")
+    end
   end
 
   def extract

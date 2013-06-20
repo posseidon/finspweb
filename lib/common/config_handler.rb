@@ -6,10 +6,15 @@
 #   Transform projection of geometry
 #
 class ConfigHandler
-  EPSG_4258 = "+proj=longlat +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +no_defs"
+  EPSG_4258 = "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs "
+  EPSG_23700 = "+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs "
 
   def self.dump_command
     "pg_dump -U {{user}} -w {{compress}} -b -a -h {{hostname}} -t {{tablename}} {{databasename}} -f {{output_directory}}/{{filename}}"
+  end
+
+  def self.ogr2ogr_command
+    "ogr2ogr -f 'ESRI Shapefile' -s_srs EPSG:{{src_proj}} -t_srs EPSG:4258 {{new_file}} {{src_file}}"
   end
 
   def self.app_config(variable)
@@ -24,16 +29,6 @@ class ConfigHandler
     time = Time.now.strftime('%Y%m%d-%H%M')
     basename = "#{schema}-#{shape_id}-#{time}"
     filename = compacted == true ? "#{basename}.tar" : "#{basename}.sql"
-  end
-
-  def self.transform_geometry(source_srid, source_geometry, destination_srid)
-    unless source_srid == destination_srid
-      src_proj  = RGeo::Geographic.spherical_factory(:srid => source_srid)
-      dest_proj = RGeo::Geos.factory(:proj4 => ConfigHandler::EPSG_4258, :srid => destination_srid)
-      return RGeo::CoordSys::Proj4.transform(src_proj.proj4, source_geometry, dest_proj.proj4, dest_proj)
-    else
-      return source_geometry
-    end
   end
 
 end

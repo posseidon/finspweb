@@ -103,6 +103,14 @@
           <div style="clear:both;"></div>
       </div>
   </div>
+  <% unless admin_unit.faults.nil? %>
+    <div class="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error: </strong> <%= admin_unit.faults %>
+      <%= link_to 'Delete Version', @version, :confirm => "Delete #{@version.name}?", :method => :delete %>
+    </div>
+  <% end %>
+
   <script type="text/javascript">
     $(function(){
       var helper = $("#auIdentifier").data("popover");

@@ -10,7 +10,7 @@ class ProcessingWorker
 
     features = 0
     JSON.parse(shapefile.note)['files'].each do |file|
-      store_shapefile(file['file'], mappings, shapefile.projection, object_type)
+      store_shapefile(file['file'], mappings, object_type)
       features += file['size']
     end
 
@@ -18,12 +18,12 @@ class ProcessingWorker
   end
 
   private
-  def store_shapefile(filename, mappings, projection, object_type)
+  def store_shapefile(filename, mappings, object_type)
     RGeo::Shapefile::Reader.open(filename) do |shp_file|
       shp_file.each do |record|
         object = InspireFactory.create(object_type)
-        object.set_attributes(record, mappings, projection)
-        object.save!
+        object.set_attributes(record, mappings)
+        object.save
       end
     end
   end
