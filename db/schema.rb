@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130604154118) do
+ActiveRecord::Schema.define(:version => 20130625170105) do
 
   create_table "administrativeunits", :force => true do |t|
     t.string  "identifier"
@@ -30,6 +30,13 @@ ActiveRecord::Schema.define(:version => 20130604154118) do
     t.string  "label"
     t.string  "natref"
     t.spatial "geom",       :limit => {:srid=>4258, :type=>"geometry"}
+  end
+
+  create_table "mappings", :force => true do |t|
+    t.integer "user_id"
+    t.string  "mapping_type", :null => false
+    t.text    "data",         :null => false
+    t.string  "name"
   end
 
   create_table "pg_search_documents", :force => true do |t|

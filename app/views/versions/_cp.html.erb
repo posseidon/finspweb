@@ -8,6 +8,7 @@
   </div>
 <!-- Action steps -->
   <div id="cadastralParcelsSteps" class="row-fluid psteps_strict" title="<%= cad_parcel.condition %>">
+
       <!-- Step Orders -->
       <div class="span3">
         <div class="step-title"><span class="step-order">1.</span> <span class="step-name">Unzip Content</span></div>
@@ -28,6 +29,37 @@
           </div>
           <!-- Processing -->
           <div class="step-content">
+  <div class="row-fluid">
+    <div class="span3"><button id="cpSaveSelectionBtn" class="btn btn-success">Save Mappings</button></div>
+    <div class="span3"><button id="cpClearSelectionBtn" class="btn btn-inverse">Clear Mappings</button></div>
+    <div class="span3">
+      <%= form_tag transform_version_path, {:id => 'cp_transform_data_form', :remote => true} do %>
+        <%= hidden_field_tag :map_list, "" %>
+        <%= hidden_field_tag :shapeid, cad_parcel.id %>
+        <%= hidden_field_tag :type, "cp" %>
+        <%= submit_tag 'Transform Data', :class => 'btn btn-primary action' %>
+      <% end %>
+    </div>
+  </div>
+  <br>
+  <div class="accordion" id="saved_mappings">
+  <% mappings_of('cp').each do |mapping| %>
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
+          <%= mapping.name %>
+        </a>
+      </div>
+      <div id="<%= mapping.id %>" class="accordion-body collapse in">
+        <div class="accordion-inner">
+          <%= mapping.data %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  </div>
+
+
             <input id="cpSchema" value="<%= schema('CP') %>" class="hide"/>
             <input id="cpShapeSchema" value="<%= cad_parcel.note %>" class="hide">
             <div class="span5">
@@ -38,7 +70,6 @@
                 </thead>
                 <tbody></tbody>
               </table>
-              <button id="cpClearSelectionBtn" class="btn btn-inverse">Clear Mappings</button>
             </div>
             <div class="span6">
               <table id="cpTable" class="table table-striped table-condensed table-bordered" style="width: 100%;">
@@ -48,12 +79,6 @@
                 </thead>
                 <tbody></tbody>
               </table>
-              <%= form_tag transform_version_path, {:id => 'cp_transform_data_form', :remote => true} do %>
-                <%= hidden_field_tag :map_list, "" %>
-                <%= hidden_field_tag :shapeid, cad_parcel.id %>
-                <%= hidden_field_tag :type, "cp" %>
-                <%= submit_tag 'Transform Data', :class => 'btn btn-primary action' %>
-              <% end %>
             </div>
           </div>
           <!-- Archive -->
@@ -117,6 +142,7 @@
       <%= link_to 'Delete Version', @version, :confirm => "Delete #{@version.name}?", :method => :delete %>
     </div>
   <% end %>
+
   <script type="text/javascript">
     $(function(){
       var helper = $("#cpIdentifier").data("popover");
@@ -160,6 +186,12 @@
         }else{
           $(".cplocation").removeAttr("disabled");
         }
+      });
+
+      $(".accordion-toggle").click(function(){
+        var dataId = $(this).attr("href");
+        var data = $(dataId+" > div").html();
+        load_mapping_table(data, "cpTable");
       });
 
 

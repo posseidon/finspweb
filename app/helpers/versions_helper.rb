@@ -34,4 +34,8 @@ module VersionsHelper
     end
   end
 
+  def mappings_of(type)
+    current_user.mappings.where(mapping_type: type)
+  end
+
 end

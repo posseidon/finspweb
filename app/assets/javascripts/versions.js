@@ -1,22 +1,3 @@
-var startStep = function(condition){
-  switch(condition){
-    case 'UnExtracted':
-      return '1';
-      break;
-    case 'Extracted':
-      return '2';
-      break;
-    case 'Processed':
-      return '3';
-      break;
-    case 'Archived':
-      return '4';
-      break;
-    default:
-      return '1';
-  }
-};
-
 $(function() {
   $('#adminUnitsSteps').psteps({
     traverse_titles: 'never',
@@ -38,8 +19,41 @@ $(function() {
     step_start: startStep($("#geographicalNamesSteps").attr("title")),
     back: false
   });
+
+  $(".action").click(function(){
+    $("#foo").modal({
+      keyboard: false,
+      show: true
+    });
+  });
+  var target = document.getElementById('spinner');
+  var spinner = new Spinner(opts).spin(target);
+
+  $("#checkFolderLink").click(function(){
+    var hrefValue = $(this).attr("href").split("=")[0];
+    $(this).attr("href", hrefValue + "=" + $("#location").val());
+  });
 });
 
+
+var startStep = function(condition){
+  switch(condition){
+    case 'UnExtracted':
+      return '1';
+      break;
+    case 'Extracted':
+      return '2';
+      break;
+    case 'Processed':
+      return '3';
+      break;
+    case 'Archived':
+      return '4';
+      break;
+    default:
+      return '1';
+  }
+};
 
 var loadInfo = function(jsonObject, infoElement){
   var files = JSON.parse(jsonObject).files;
@@ -47,9 +61,9 @@ var loadInfo = function(jsonObject, infoElement){
   $.each(files, function(idx, value){
     records += value.size;
   });
-  
+
   $("#"+infoElement).attr("data-original-title", "Records: " + records);
-  
+
 }
 
 var modelSchema = function(attributesArray, schemaTable){
@@ -81,6 +95,18 @@ var clearSchemaTable = function(tableId){
   });
 };
 
+var load_mapping_table = function(mapping, tableId){
+  // Clear table content
+  $("#"+tableId+" > tbody").html("");
+  // Iterate through attributes and append.
+  var data = JSON.parse(mapping, function(key, value){
+    if(key){
+      // Append a new row
+      $("#"+tableId+" > tbody").append("<tr>"+"<td class='key'>"+ key +"</td><td class='droppable mapped'>"+ value +"</td></tr>");
+    }
+  });
+};
+
 var opts = {
   lines: 13, // The number of lines to draw
   length: 20, // The length of each line
@@ -99,23 +125,5 @@ var opts = {
   top: 'auto', // Top position relative to parent in px
   left: 'auto' // Left position relative to parent in px
 };
-
-$(function(){
-
-  $(".action").click(function(){
-    $("#foo").modal({
-      keyboard: false,
-      show: true
-    });
-  });
-  var target = document.getElementById('spinner');
-  var spinner = new Spinner(opts).spin(target);
-
-  $("#checkFolderLink").click(function(){
-    var hrefValue = $(this).attr("href").split("=")[0];
-    $(this).attr("href", hrefValue + "=" + $("#location").val());
-  });
-
-});
 
 

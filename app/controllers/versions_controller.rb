@@ -74,11 +74,11 @@ class VersionsController < ApplicationController
       shapeid = params[:shapeid]
       maplist = params[:map_list]
       object_type = params[:type]
-      unless Shapefile.valid_for_processing(params[:type])
-        SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
-      else
-        @error = true
-      end
+      #unless Shapefile.valid_for_processing(params[:type])
+      #  SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
+      #else
+      #  @error = true
+      #end
     rescue => exception
       @error = true
     end
