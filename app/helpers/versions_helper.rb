@@ -2,11 +2,11 @@ module VersionsHelper
 
   def schema(model)
     case model
-    when 'AU'
+    when 'Administrative Units'
       (Administrativeunit.new.attributes.keys - ["id", "geom"]).to_json
-    when 'CP'
+    when 'Cadastral Parcels'
       (Cadastralparcel.new.attributes.keys - ["id", "geom"]).to_json
-    when 'GN'
+    when 'Geographical Names'
       raise NotImplementedError
     else
       raise NotImplementedError

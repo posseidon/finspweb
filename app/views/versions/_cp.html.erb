@@ -29,35 +29,29 @@
           </div>
           <!-- Processing -->
           <div class="step-content">
-  <div class="row-fluid">
-    <div class="span3"><button id="cpSaveSelectionBtn" class="btn btn-success">Save Mappings</button></div>
-    <div class="span3"><button id="cpClearSelectionBtn" class="btn btn-inverse">Clear Mappings</button></div>
-    <div class="span3">
-      <%= form_tag transform_version_path, {:id => 'cp_transform_data_form', :remote => true} do %>
-        <%= hidden_field_tag :map_list, "" %>
-        <%= hidden_field_tag :shapeid, cad_parcel.id %>
-        <%= hidden_field_tag :type, "cp" %>
-        <%= submit_tag 'Transform Data', :class => 'btn btn-primary action' %>
-      <% end %>
-    </div>
-  </div>
-  <br>
-  <div class="accordion" id="saved_mappings">
-  <% mappings_of('cp').each do |mapping| %>
-    <div class="accordion-group">
-      <div class="accordion-heading">
-        <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
-          <%= mapping.name %>
-        </a>
-      </div>
-      <div id="<%= mapping.id %>" class="accordion-body collapse in">
-        <div class="accordion-inner">
-          <%= mapping.data %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-  </div>
+
+            <div class="row-fluid">
+              <div class="span4"><button id="cpSaveSelectionBtn" class="btn btn-success" href="#saveCpMappingsModal" data-toggle="modal">Save Mappings</button></div>
+              <div class="span4"><button id="cpClearSelectionBtn" class="btn btn-inverse">Clear Mappings</button></div>
+              <div class="span4"><button id="cpTransformBtn" class="btn btn-primary action">Transform Data</button></div>
+            </div>
+            <br>
+            <div class="accordion" id="saved_mappings">
+              <% mappings_of('cp').each do |mapping| %>
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
+                      <%= mapping.name %>
+                    </a>
+                  </div>
+                  <div id="<%= mapping.id %>" class="accordion-body collapse in">
+                    <div class="accordion-inner">
+                      <%= mapping.data %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
 
 
             <input id="cpSchema" value="<%= schema('CP') %>" class="hide"/>
@@ -143,6 +137,32 @@
     </div>
   <% end %>
 
+  <%= form_tag transform_version_path, {:id => 'cp_transform_data_form', :remote => true} do %>
+    <div id="errors">
+    </div>
+    <%= hidden_field_tag :map_list, "" %>
+    <%= hidden_field_tag :shapeid, cad_parcel.id %>
+    <%= hidden_field_tag :type, "cp" %>
+  <% end %>
+
+  <div id="saveCpMappingsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Current Mapping</h3>
+    </div>
+    <div class="modal-body">
+      <%= form_tag save_mapping_version_path, {:id => 'cp_save_mapping_form', :class => 'form-inline', :remote => true} do %>
+        <div class="input-prepend input-append">
+          <span class="add-on">Name it:</span>
+          <%= hidden_field_tag :mapping_type, 'cp' %>
+          <%= hidden_field_tag :data, "" %>
+          <%= text_field_tag :name, nil, placeholder: 'Name your Mapping', :class => 'input-xlarge' %>
+          <%= submit_tag 'Save mapping data!', :class => 'btn' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <script type="text/javascript">
     $(function(){
       var helper = $("#cpIdentifier").data("popover");
@@ -155,29 +175,24 @@
 
       modelSchema($("#cpSchema").val(), "cpTable");
       shapeSchema($("#cpShapeSchema").val(), "cpSchemaTable");
-      $("#cpSchemaTable tbody tr .draggable").draggable({
-        helper: "clone",
-        containment: "#cadastralParcelsSteps",
-        cursor: "crosshair"
-      });
 
-      $("#cpTable tbody .droppable.mapped").droppable({
-        drop: function(event, ui){
-          var mappedValue = $(this).html();
-          if(mappedValue != ''){
-            $(this).text(mappedValue + "," + ui.draggable.text());
-          }else{
-            $(this).text(ui.draggable.text());
-          }
-        }
-      });
+      setDraggable("cpSchemaTable", "cadastralParcelsSteps");
+      setDroppable("cpTable");
 
-      $("#cp_transform_data_form").submit(function(){
+
+      $("#cpTransformBtn").click(function(){
         $("#cp_transform_data_form #map_list").val(schemaTableJSON("cpTable"));
+        $("#cp_transform_data_form").submit();
+        return false;
       });
 
       $("#cpClearSelectionBtn").click(function(){
         clearSchemaTable("cpTable");
+        setDroppable("cpTable");
+      });
+
+      $("#cp_save_mapping_form").submit(function(){
+        $("#cp_save_mapping_form #data").val(mappingToJson("cpTable"));
       });
 
       $(".cp_default_path").change(function(){

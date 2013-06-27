@@ -54,6 +54,9 @@ class VersionsController < ApplicationController
     @admin_unit = @version.shapefiles.find_by_identifier(ADMIN_UNITS_ID)
     @cad_parcel = @version.shapefiles.find_by_identifier(CADASTRAL_PARCELS_ID)
     @geo_name = @version.shapefiles.find_by_identifier(GEOGRAPHICAL_NAMES_ID)
+  rescue => exception
+    @message = "Version not found"
+    render "error", :locals => {:message => @message}
   end
 
   def destroy
@@ -98,6 +101,11 @@ class VersionsController < ApplicationController
     rescue => exception
       # TODO: Log: Error on params[archive_path] does not exists
     end
+  end
+
+  def save_mapping
+    @mapping = current_user.mappings.create(:name => params[:name], :mapping_type => params[:mapping_type], :data => params[:data])
+
   end
 
   def folder_exists

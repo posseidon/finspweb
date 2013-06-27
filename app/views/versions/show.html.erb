@@ -14,9 +14,9 @@
   </div>
 </div>
 <% @version.shapefiles.each do |shapefile| %>
-  <%= render rendering(shapefile.identifier),
-            :admin_unit => @admin_unit, :geo_name => @geo_name, :cad_parcel => @cad_parcel %>
+  <%= render :partial => 'shapefile', :locals => {:shapefile => shapefile, :version => @version} %>
 <% end %>
+
 <div id ="foo" class="modal hide fade modal-fullscreen" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <!--div id="spinner" style="position:fixed;top:50%;left:50%"></div>-->
   <div class="row-fluid">

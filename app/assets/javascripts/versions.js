@@ -1,24 +1,26 @@
 $(function() {
-  $('#adminUnitsSteps').psteps({
-    traverse_titles: 'never',
-    step_order: false,
-    step_start: startStep($("#adminUnitsSteps").attr("title")),
-    back: false
+
+  /**
+   * Clear mapping on click request.
+   */
+  $(".clear").click(function(){
+    var tblId = $(this).attr("data-name");
+    clearSchemaTable(tblId);
+    setDroppable(tblId);
   });
 
-  $('#cadastralParcelsSteps').psteps({
-    traverse_titles: 'never',
-    step_order: false,
-    step_start: startStep($("#cadastralParcelsSteps").attr("title")),
-    back: false
+  /**
+   * Activate Save Mapping Form.
+   */
+  $(".save").click(function(){
+    var mappingTable = $(this).attr("data-reminder");
+    var mappingRule  = mappingToJson(mappingTable);
+    var targetTbl    = $(this).attr("data-appender");
+    var modal        = $(this).attr("href");
+    $(modal + " > .modal-header > form #data").val(mappingRule);
+    loadMappingData(mappingRule, targetTbl);
   });
 
-  $('#geographicalNamesSteps').psteps({
-    traverse_titles: 'never',
-    step_order: false,
-    step_start: startStep($("#geographicalNamesSteps").attr("title")),
-    back: false
-  });
 
   $(".action").click(function(){
     $("#foo").modal({
@@ -35,6 +37,15 @@ $(function() {
   });
 });
 
+
+var loadActionSteps = function(divIdentifier){
+  $('#'+divIdentifier).psteps({
+    traverse_titles: 'never',
+    step_order: false,
+    step_start: startStep($("#"+divIdentifier).attr("title")),
+    back: false
+  });
+}
 
 var startStep = function(condition){
   switch(condition){
@@ -54,6 +65,27 @@ var startStep = function(condition){
       return '1';
   }
 };
+
+var setDroppable = function(tableId){
+  $("#" + tableId +" tbody .droppable.mapped").droppable({
+    drop: function(event, ui){
+      var mappedValue = $(this).html();
+      if(mappedValue != ''){
+        $(this).text(mappedValue + "," + ui.draggable.text());
+      }else{
+        $(this).text(ui.draggable.text());
+      }
+    }
+  });
+}
+
+var setDraggable = function(tableId, container){
+  $("#" + tableId + " tbody tr .draggable").draggable({
+    helper: "clone",
+    containment: "#"+container,
+    cursor: "crosshair"
+  });
+}
 
 var loadInfo = function(jsonObject, infoElement){
   var files = JSON.parse(jsonObject).files;
@@ -89,9 +121,31 @@ var schemaTableJSON = function(tableId){
   return JSON.stringify(data);
 };
 
+var mappingToJson = function(tableId){
+  var obj = {};
+  $("#"+tableId+" tbody tr").each(function(){
+    var key = $(this).find(".key").html();
+    obj[key] = $(this).find(".droppable").html();
+  });
+  return JSON.stringify(obj);
+}
+
 var clearSchemaTable = function(tableId){
   $("#"+tableId+" tbody tr").each(function(){
-    var mappedValueColumn = $(this).find(".droppable").empty();
+    var mappedValueColumns = $(this).find(".droppable");
+    mappedValueColumns.html("");
+  });
+};
+
+var loadMappingData = function(data, tableId){
+  // Clear table content
+  $(tableId+" > tbody").html("");
+  // Iterate through attributes and append.
+  var data = JSON.parse(data, function(key, value){
+    if(key){
+      // Append a new row
+      $(tableId+" > tbody").append("<tr>"+"<td>"+ key +"</td><td>"+ value +"</td></tr>");
+    }
   });
 };
 

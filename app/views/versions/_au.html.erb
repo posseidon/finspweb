@@ -23,7 +23,33 @@
               <%= link_to("Extract", extract_version_path(:id => admin_unit.id), :class => "btn btn-info action", :remote => true) %>
             </blockquote>
           </div>
+
+          <!-- PROCESSING -->
           <div class="step-content">
+            <div class="row-fluid">
+              <div class="span4"><button id="auSaveSelectionBtn" class="btn btn-success" href="#saveAuMappingsModal" data-toggle="modal">Save Mappings</button></div>
+              <div class="span4"><button id="auClearSelectionBtn" class="btn btn-inverse">Clear Mappings</button></div>
+              <div class="span4"><button id="auTransformBtn" class="btn btn-primary action">Transform Data</button></div>
+            </div>
+            <br>
+            <div class="accordion" id="saved_mappings">
+              <% mappings_of('au').each do |mapping| %>
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
+                      <%= mapping.name %>
+                    </a>
+                  </div>
+                  <div id="<%= mapping.id %>" class="accordion-body collapse in">
+                    <div class="accordion-inner">
+                      <%= mapping.data %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+
             <input id="auSchema" value="<%= schema('AU') %>" class="hide"/>
             <input id="auShapeSchema" value="<%= admin_unit.note %>" class="hide">
             <div class="span4">
@@ -33,7 +59,6 @@
                 </thead>
                 <tbody></tbody>
               </table>
-              <button id="clearSelectionBtn" class="btn btn-inverse">Clear Mappings</button>
             </div>
             <div class="span5">
               <table id="auTable" class="table table-striped table-condensed table-bordered">
@@ -43,14 +68,10 @@
                 </thead>
                 <tbody></tbody>
               </table>
-              <%= form_tag transform_version_path, {:id => 'au_transform_data_form', :remote => true} do %>
-                <%= hidden_field_tag :map_list, "" %>
-                <%= hidden_field_tag :shapeid, admin_unit.id %>
-                <%= hidden_field_tag :type, "au" %>
-                <%= submit_tag 'Transform Data', :class => 'btn btn-primary action' %>
-              <% end %>
             </div>
           </div>
+
+          <!-- ARCHIVE -->
           <div class="step-content">
             <!-- Information DIV -->
             <div id="checkResultDiv" class="hidden">
@@ -111,6 +132,12 @@
     </div>
   <% end %>
 
+<%= form_tag transform_version_path, {:id => 'au_transform_data_form', :remote => true} do %>
+  <%= hidden_field_tag :map_list, "" %>
+  <%= hidden_field_tag :shapeid, admin_unit.id %>
+  <%= hidden_field_tag :type, "au" %>
+<% end %>
+
   <script type="text/javascript">
     $(function(){
       var helper = $("#auIdentifier").data("popover");
@@ -122,29 +149,24 @@
 
       modelSchema($("#auSchema").val(), "auTable");
       shapeSchema($("#auShapeSchema").val(), "auSchemaTable");
-      $("#auSchemaTable tbody tr .draggable").draggable({
-        helper: "clone",
-        containment: "#adminUnitsSteps",
-        cursor: "crosshair"
-      });
 
-      $("#auTable tbody .droppable.mapped").droppable({
-        drop: function(event, ui){
-          var mappedValue = $(this).html();
-          if(mappedValue != ''){
-            $(this).text(mappedValue + "," + ui.draggable.text());
-          }else{
-            $(this).text(ui.draggable.text());
-          }
-        }
+
+      setDraggable("auShapeSchema", "adminUnitsSteps");
+      setDroppable("auTable");
+
+      $("#auTransformBtn").click(function(){
+        $("#au_transform_data_form #map_list").val(schemaTableJSON("auTable"));
+        $("#au_transform_data_form").submit();
+        return false;
       });
 
       $("#au_transform_data_form").submit(function(){
         $("#au_transform_data_form #map_list").val(schemaTableJSON("auTable"));
       });
 
-      $("#clearSelectionBtn").click(function(){
+      $("#auClearSelectionBtn").click(function(){
         clearSchemaTable("auTable");
+        setDroppable("auTable");
       });
 
       $(".au_default_path").change(function(){
@@ -153,6 +175,12 @@
         }else{
           $(".aulocation").removeAttr("disabled");
         }
+      });
+
+      $(".accordion-toggle").click(function(){
+        var dataId = $(this).attr("href");
+        var data = $(dataId+" > div").html();
+        load_mapping_table(data, "auTable");
       });
     });
   </script>
