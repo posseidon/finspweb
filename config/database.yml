@@ -4,8 +4,6 @@ development:
   host:     localhost
   port:     5432
   database: finspweb_dev
-  username: postgres
-  password: password
   pool: 20
 
 test:
@@ -14,8 +12,6 @@ test:
   host:     localhost
   port:     5432
   database: finspweb_dev
-  username: postgres
-  password: password
   pool: 20
 
 production:
@@ -24,6 +20,4 @@ production:
   host:     localhost
   port:     5432
   database: finspweb_dev
-  username: postgres
-  password: password
   pool: 20

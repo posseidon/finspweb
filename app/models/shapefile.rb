@@ -2,7 +2,7 @@ class Shapefile < ActiveRecord::Base
   attr_accessible :identifier, :shapefile, :condition, :projection, :note, :faults
   belongs_to :version
   has_attached_file :shapefile,
-                    :path => "/home/ntb/Public/system/:attachment/:id/:filename",
+                    :path => "/usr/share/finspweb/system/:attachment/:id/:filename",
                     :url => "/system/:attachment/:id/:filename"
 
   validates :projection, :numericality => true

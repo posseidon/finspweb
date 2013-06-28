@@ -60,13 +60,13 @@ ActiveRecord::Schema.define(:version => 20130625170105) do
   create_table "shapefiles", :force => true do |t|
     t.string   "identifier"
     t.integer  "version_id"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
     t.string   "shapefile_file_name"
     t.string   "shapefile_content_type"
     t.integer  "shapefile_file_size"
     t.datetime "shapefile_updated_at"
-    t.string   "condition",              :default => "Empty"
+    t.string   "condition",              :default => "UnExtracted"
     t.integer  "features",               :default => 0
     t.string   "faults"
     t.integer  "projection",             :default => 4236
