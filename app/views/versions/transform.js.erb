@@ -1,9 +1,7 @@
-<% if @error %>
-  $("#textInfo").html("&nbsp;");
-  $("#reasonInfo").html("Active Schema");
-  $("#warningInfo").html("Exists");
+<% if @error  %>
+  $("#deactivateErrors").html("Existing Active Schema");
+  $("#checkResultDiv").modal('show');
 <% else %>
-  $("#textInfo").html("&nbsp;");
-  $("#reasonInfo").html("Processing");
-  $("#warningInfo").html("...");
+  $("#deactivateErrors").html("Processing ....");
+  $("#checkResultDiv").modal('show');
 <% end %>

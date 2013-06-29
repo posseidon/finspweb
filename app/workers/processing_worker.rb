@@ -9,7 +9,7 @@ class ProcessingWorker
     shapefile = Shapefile.find(shape_id)
 
     features = 0
-    JSON.parse(shapefile.note)['files'].each do |file|
+    JSON.parse(JSON.parse(shapefile.note)['files']).each do |file|
       store_shapefile(file['file'], mappings, object_type)
       features += file['size']
     end

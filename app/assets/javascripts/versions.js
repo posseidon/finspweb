@@ -22,19 +22,6 @@ $(function() {
   });
 
 
-  $(".action").click(function(){
-    $("#foo").modal({
-      keyboard: false,
-      show: true
-    });
-  });
-  var target = document.getElementById('spinner');
-  var spinner = new Spinner(opts).spin(target);
-
-  $("#checkFolderLink").click(function(){
-    var hrefValue = $(this).attr("href").split("=")[0];
-    $(this).attr("href", hrefValue + "=" + $("#location").val());
-  });
 });
 
 

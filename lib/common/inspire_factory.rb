@@ -10,6 +10,10 @@ class InspireFactory
         'cp' => {
           'table_name' => Cadastralparcel.table_name,
           'identifier' => 'Cadastral Parcels'
+        },
+        'gn' => {
+          'table_name' => Geographicalname.table_name,
+          'identifier' => 'Geographical Names'
         }
       }
 
@@ -19,6 +23,8 @@ class InspireFactory
       return Administrativeunit.new
     when 'cp'
       return Cadastralparcel.new
+    when 'gn'
+      return Geographicalname.new
     else
       return nil
     end
@@ -39,6 +45,8 @@ class InspireFactory
       Administrativeunit.delete_all
     when 'cp'
       Cadastralparcel.delete_all
+    when 'gn'
+      Geographicalname.delete_all
     else
       raise NotImplementedError
     end

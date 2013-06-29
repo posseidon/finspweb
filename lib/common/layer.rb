@@ -18,7 +18,7 @@ class Layer
 
   def to_json
     {
-      "files"  => @files,
+      "files"  => @files.to_json,
       "schema" => @attributes
     }.to_json
   end
