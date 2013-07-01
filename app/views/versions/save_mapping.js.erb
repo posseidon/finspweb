@@ -1,2 +1,3 @@
 //Re-render #saved_mappings div
 $(".modal").modal('hide');
+$("#saved_mappings<%= @shapefile.id %>").html("<%= escape_javascript(render :partial => 'mapping', :locals => {:shapefile => @shapefile}) %>");

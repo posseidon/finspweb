@@ -92,7 +92,7 @@ class VersionsController < ApplicationController
 
   def save_mapping
     @mapping = current_user.mappings.create(:name => params[:name], :mapping_type => params[:mapping_type], :data => params[:data])
-
+    @shapefile = Shapefile.find(params[:shapefile])
   end
 
   def folder_exists

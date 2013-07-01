@@ -7,7 +7,7 @@ module VersionsHelper
     when 'Cadastral Parcels'
       (Cadastralparcel.new.attributes.keys - ["id", "geom"]).to_json
     when 'Geographical Names'
-      raise NotImplementedError
+      (Geographicalname.new.attributes.keys - ["id", "geom"]).to_json
     else
       raise NotImplementedError
     end

@@ -1,0 +1,14 @@
+<% mappings_of(rendering(shapefile.identifier)).each do |mapping| %>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
+        <%= mapping.name %>
+      </a>
+    </div>
+    <div id="<%= mapping.id %>" class="accordion-body collapse in">
+      <div class="accordion-inner">
+        <%= mapping.data %>
+      </div>
+    </div>
+  </div>
+<% end %>

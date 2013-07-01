@@ -50,21 +50,8 @@
           </div>
         </div>
         <br>
-        <div class="accordion" id="saved_mappings">
-          <% mappings_of(rendering(shapefile.identifier)).each do |mapping| %>
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" href="#<%= mapping.id %>">
-                  <%= mapping.name %>
-                </a>
-              </div>
-              <div id="<%= mapping.id %>" class="accordion-body collapse in">
-                <div class="accordion-inner">
-                  <%= mapping.data %>
-                </div>
-              </div>
-            </div>
-          <% end %>
+        <div class="accordion" id="saved_mappings<%= shapefile.id %>">
+          <%= render :partial => 'mapping', :locals => {:shapefile => shapefile} %>
         </div>
         <!-- Store ISNPIRE and Shapefile Schemas in hidden input -->
         <input id="inspire<%= shapefile.id %>" value="<%= schema(shapefile.identifier) %>" class="hide"/>
@@ -184,6 +171,7 @@
       <%= form_tag save_mapping_version_path, {:id => 'save_mapping_form', :class => 'form-inline', :remote => true} do %>
         <div class="input-prepend input-append">
           <span class="add-on">Name:</span>
+          <%= hidden_field_tag :shapefile, shapefile.id %>
           <%= hidden_field_tag :mapping_type, rendering(shapefile.identifier) %>
           <%= hidden_field_tag :data, "" %>
           <%= text_field_tag :name, nil, placeholder: 'Name your Mapping', :class => 'input-xlarge' %>
