@@ -62,7 +62,7 @@ class VersionsController < ApplicationController
   end
 
   def extract
-    perform(params[:id])
+    perform_extract(params[:id])
     #SuckerPunch::Queue[:extract_queue].async.perform(params[:id])
   end
 
@@ -71,7 +71,8 @@ class VersionsController < ApplicationController
     maplist = params[:map_list]
     object_type = params[:type]
     unless Shapefile.valid_for_processing(params[:type])
-      SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
+      perform_transform(shapeid, maplist, object_type)
+      #SuckerPunch::Queue[:processing_queue].async.perform(shapeid, maplist, object_type)
     else
       @error = true
       @active_shp = Shapefile.where(:identifier => params[:type], :condition => 'Processed').first
@@ -87,7 +88,8 @@ class VersionsController < ApplicationController
     archive_path = params['default_path'].nil? ? location : default_path
     compress = params['compress'] == nil ? false : true
 
-    SuckerPunch::Queue[:deactivate_queue].async.perform(archive_path, compress, schema, shapeid)
+    #SuckerPunch::Queue[:deactivate_queue].async.perform(archive_path, compress, schema, shapeid)
+    perform_deactivate(archive_path, compress, schema, shapeid)
   rescue => exception
       # TODO: Log: Error on params[archive_path] does not exists
     puts exception
@@ -110,7 +112,7 @@ class VersionsController < ApplicationController
 
   private
 
-  def perform(id)
+  def perform_extract(id)
     shapefile = Shapefile.find(id)
     begin
       dirname = File.dirname(shapefile.shapefile.path)
@@ -169,4 +171,72 @@ class VersionsController < ApplicationController
     end
     layer.to_json
   end
+
+  def perform_transform(shape_id, map_list, object_type)
+    mappings = Hash[*JSON.parse(map_list)]
+    shapefile = Shapefile.find(shape_id)
+
+    features = 0
+    JSON.parse(JSON.parse(shapefile.note)['files']).each do |file|
+      store_shapefile(file['file'], mappings, object_type)
+      features += file['size']
+    end
+
+    shapefile.update_condition('Processed', features)
+  end
+
+  def store_shapefile(filename, mappings, object_type)
+    RGeo::Shapefile::Reader.open(filename) do |shp_file|
+      shp_file.each do |record|
+        object = InspireFactory.create(object_type)
+        object.set_attributes(record, mappings)
+        object.save
+      end
+    end
+  end
+
+  def perform_deactivate(archive_path, use_compression, schema, shapeid)
+    default_parameters = setup_parameters(archive_path, use_compression, schema, shapeid)
+
+    command = gsub_dump_command(default_parameters)
+    system(command)
+
+    shapefile = Shapefile.find(shapeid)
+    shapefile.condition = 'Archived'
+    shapefile.archive_path = "#{archive_path}/#{default_parameters['{{filename}}']}"
+    shapefile.save!
+
+    version = shapefile.version
+    version.active = false
+    version.archived = true
+    version.save!
+
+    InspireFactory.destroy_all(schema)
+  end
+
+  def setup_parameters(archive_path, use_compression, schema, shapeid)
+    parameters = {
+      "{{user}}" => ConfigHandler.db_config('username'),
+      "{{databasename}}" => ConfigHandler.db_config('database'),
+      "{{output_directory}}" => archive_path,
+      "{{hostname}}" => ConfigHandler.db_config('host'),
+      "{{tablename}}" => InspireFactory.table_name(schema),
+      "{{compress}}" => use_compression == true ? "-Ft" : " "
+    }
+    if use_compression
+      parameters["{{filename}}"] = ConfigHandler.generate_file_name(schema, shapeid, true)
+    else
+      parameters["{{filename}}"] = ConfigHandler.generate_file_name(schema, shapeid, false)
+    end
+    return parameters
+  end
+
+  def gsub_dump_command(parameters)
+    command = ConfigHandler.dump_command
+    parameters.each do |key, value|
+      command.gsub!(key, value)
+    end
+    return command
+  end
+
 end
