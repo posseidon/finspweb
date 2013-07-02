@@ -62,7 +62,8 @@ class VersionsController < ApplicationController
   end
 
   def extract
-    SuckerPunch::Queue[:extract_queue].async.perform(params[:id])
+    perform(params[:id])
+    #SuckerPunch::Queue[:extract_queue].async.perform(params[:id])
   end
 
   def transform
