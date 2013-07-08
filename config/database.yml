@@ -3,7 +3,7 @@ development:
   encoding: unicode
   host:     localhost
   port:     5432
-  database: inspire
+  database: finspweb_dev
   username: inspire
   pool: 20
 

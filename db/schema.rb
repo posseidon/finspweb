@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130629190032) do
+ActiveRecord::Schema.define(:version => 20130708143901) do
 
   create_table "administrativeunits", :force => true do |t|
     t.string  "identifier"
@@ -30,52 +30,6 @@ ActiveRecord::Schema.define(:version => 20130629190032) do
     t.string  "label"
     t.string  "natref"
     t.spatial "geom",       :limit => {:srid=>4258, :type=>"geometry"}
-  end
-
-  create_table "fnt", :id => false, :force => true do |t|
-    t.integer "objectid"
-    t.string  "nev",        :limit => 254
-    t.string  "tipusnev"
-    t.string  "tipus_name"
-    t.text    "forrasnev"
-    t.spatial "geometria",  :limit => {:srid=>4258, :type=>"point"}
-    t.xml     "xml"
-  end
-
-  create_table "fnt_orszagos_jav", :primary_key => "gid", :force => true do |t|
-    t.integer "objectid_1"
-    t.integer "objectid"
-    t.integer "sorszam"
-    t.string  "nev",        :limit => 254
-    t.string  "nemzetiseg", :limit => 254
-    t.string  "nemzetis_1", :limit => 254
-    t.integer "tipus_id"
-    t.integer "megye_kod"
-    t.string  "telepules_", :limit => 254
-    t.string  "telepules1", :limit => 254
-    t.string  "ksh_azonos", :limit => 254
-    t.string  "korjegyzos", :limit => 254
-    t.string  "korj_szh_v", :limit => 254
-    t.integer "eov_x"
-    t.integer "eov_y"
-    t.decimal "wgs_84_e_s"
-    t.decimal "wgs_84_k_h"
-    t.integer "magassag"
-    t.integer "magassag_f"
-    t.integer "lakossag_s"
-    t.integer "vizfolyas_"
-    t.string  "megjegyzes", :limit => 254
-    t.integer "forras1"
-    t.integer "forras2"
-    t.spatial "geom",       :limit => {:srid=>23700, :type=>"point"}
-    t.spatial "geometria",  :limit => {:srid=>4258, :type=>"point"}
-  end
-
-  add_index "fnt_orszagos_jav", ["geom"], :name => "fnt_orszagos_jav_geom_gist", :spatial => true
-
-  create_table "forras", :id => false, :force => true do |t|
-    t.integer "id",        :null => false
-    t.text    "forrasnev"
   end
 
   create_table "geographicalnames", :force => true do |t|
@@ -124,19 +78,9 @@ ActiveRecord::Schema.define(:version => 20130629190032) do
     t.string   "condition",              :default => "Empty"
     t.integer  "features",               :default => 0
     t.string   "faults"
-    t.integer  "projection",             :default => 4236
+    t.integer  "projection",             :default => 4326
     t.text     "note"
     t.string   "archive_path"
-  end
-
-  create_table "tipus", :id => false, :force => true do |t|
-    t.integer "id",       :null => false
-    t.string  "tipusnev"
-  end
-
-  create_table "tipus_en", :id => false, :force => true do |t|
-    t.integer "id",         :null => false
-    t.string  "tipus_name"
   end
 
   create_table "users", :force => true do |t|
